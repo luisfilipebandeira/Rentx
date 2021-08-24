@@ -9,6 +9,9 @@ import { ConfirmButton } from '../../components/ConfirmButton'
 
 import { useNavigation } from '@react-navigation/native'
 
+import { RootStackParamList } from '../../routes/stack.routes'
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+
 import {
    Container,
    Content,
@@ -17,9 +20,11 @@ import {
    Footer
 } from './styles'
 
+type schedulingCompleteScreenProp = NativeStackNavigationProp<RootStackParamList, 'SchedulingComplete'>
+
 export function SchedulingComplete(){
    const {width} = useWindowDimensions()
-   const navigation = useNavigation()
+   const navigation = useNavigation<schedulingCompleteScreenProp>()
 
    return (
     <Container>

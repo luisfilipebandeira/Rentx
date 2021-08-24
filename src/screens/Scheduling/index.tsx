@@ -7,7 +7,7 @@ import { Button } from '../../components/Button'
 import { Calendar, DayProps, generateInterval, MarkedDatesProps} from '../../components/Calendar'
 import { format } from 'date-fns'
 
-import { StatusBar, Alert } from 'react-native'
+import { StatusBar } from 'react-native'
 
 import ArrowSvg from '../../assets/arrow.svg'
 
@@ -16,6 +16,9 @@ import { useNavigation, useRoute } from '@react-navigation/native'
 import { getPlatformDate } from '../../utils/getPlatformDate'
 
 import { CarDTO } from '../../dtos/CarDTO'
+
+import { RootStackParamList } from '../../routes/stack.routes'
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 
 import {
    Container,
@@ -33,18 +36,20 @@ interface Params{
     car: CarDTO
 }
 
-interface RentalPeriod{
+interface IRentalPeriod{
     startFormatted: string
     endFormatted: string
 }
 
+type schedulingScreenProp = NativeStackNavigationProp<RootStackParamList, 'Scheduling'>
+
 export function Scheduling(){
     const [lastSelectedDate, setLastSelectedDate] = useState<DayProps>({} as DayProps)
     const [markedDates, setMarkedDates] = useState<MarkedDatesProps>({} as MarkedDatesProps)
-    const [rentalPeriod, setRentalPeriod] = useState<RentalPeriod>({} as RentalPeriod)
+    const [rentalPeriod, setRentalPeriod] = useState<IRentalPeriod>({} as IRentalPeriod)
 
     const theme = useTheme()
-    const navigation = useNavigation()
+    const navigation = useNavigation<schedulingScreenProp>()
 
     const route = useRoute()
     const {car} = route.params as Params
@@ -72,21 +77,17 @@ export function Scheduling(){
     }
 
     function handleNavigation(){
-        if(!rentalPeriod.startFormatted || !rentalPeriod.endFormatted){
-            Alert.alert('Selecione o periodo que você quer alugar o carro')
-        }else {
-            navigation.navigate('SchedulingDetails', {
-                car,
-                dates: Object.keys(markedDates)
-            })
-        }
+        navigation.navigate('SchedulingDetails', {
+            car,
+            dates: Object.keys(markedDates)
+        })
     }
 
    return (
     <Container>
         <Header>
             <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
-            <BackButton color={theme.colors.shape} onPress={() => {}} />
+            <BackButton color={theme.colors.shape} />
             <Title>Escolha uma {`\n`}data de inicio e {`\n`}fim do aluguel</Title>
 
             <RentalPeriod>
@@ -112,7 +113,7 @@ export function Scheduling(){
         </Content>
 
         <Footer>
-            <Button title="Confirmar" onPress={handleNavigation} />
+            <Button enabled={!!rentalPeriod.endFormatted} title="Confirmar" onPress={handleNavigation} />
         </Footer>
     </Container>
    )

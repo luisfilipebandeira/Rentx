@@ -13,9 +13,14 @@ import { useTheme } from 'styled-components'
 import { useNavigation, useRoute } from '@react-navigation/native'
 
 import { CarDTO } from '../../dtos/CarDTO'
-import { MarkedDatesProps } from '../../components/Calendar'
 import { getAccessoryIcon } from '../../utils/getAccessoryIcon'
 import { getPlatformDate } from '../../utils/getPlatformDate'
+
+import api from '../../services/api'
+import { Alert } from 'react-native'
+
+import { RootStackParamList } from '../../routes/stack.routes'
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 
 import {
    Container,
@@ -49,21 +54,51 @@ interface Params{
     dates: string[]
 }
 
-interface RentalPeriod{
+interface IRentalPeriod{
     start: string
     end: string
 }
 
+type schedulingDetailsScreenProp = NativeStackNavigationProp<RootStackParamList, 'SchedulingDetails'>
+
 export function SchedulingDetails(){
-   const [rentalPeriod, setRentalPeriod] = useState<RentalPeriod>({} as RentalPeriod)
+   const [rentalPeriod, setRentalPeriod] = useState<IRentalPeriod>({} as IRentalPeriod)
+   const [loading, setLoading] = useState(false)
 
    const theme = useTheme()
-   const navigation = useNavigation()
+   const navigation = useNavigation<schedulingDetailsScreenProp>()
 
    const route = useRoute()
    const {car, dates} = route.params as Params
 
    const rentTotal = Number(dates.length * car.rent.price)
+
+   async function handleConfirmRental(){
+    setLoading(true)
+    const schedulesByCar = await api.get(`/schedules_bycars/${car.id}`)
+
+    const unavailable_dates = [
+        ...schedulesByCar.data.unavailable_dates,
+        ...dates
+    ]
+
+    await api.post('/schedules_byuser', {
+        user_id: 1,
+        car,
+        startDate: format(getPlatformDate(new Date(dates[0])), 'dd/MM/yyyy'),
+        endDate: format(getPlatformDate(new Date(dates[dates.length - 1])), 'dd/MM/yyyy'),
+    })
+
+    api.put(`/schedules_bycars/${car.id}`, {
+        id: car.id,
+        unavailable_dates
+    })
+    .then(() => navigation.navigate('SchedulingComplete'))
+    .catch(() => {
+        setLoading(false)
+        Alert.alert('Não foi possivel concluir o agendamento.')
+    })  
+   }
 
    useEffect(() => {
     setRentalPeriod({
@@ -129,7 +164,13 @@ export function SchedulingDetails(){
         </Content>
 
         <Footer>
-            <Button title="Confirmar" onPress={() => navigation.navigate("SchedulingComplete")} />
+            <Button 
+                title="Confirmar" 
+                color={theme.colors.success} 
+                onPress={handleConfirmRental}
+                enabled={!loading}
+                loading={loading}
+             />
         </Footer>
     </Container>
    )

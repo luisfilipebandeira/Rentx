@@ -4,11 +4,14 @@ import { Routes } from './src/routes';
 
 import { ThemeProvider } from 'styled-components'
 import theme from './src/styles/theme';
+import { View } from 'react-native';
 
 export default function App() {
   return (
     <ThemeProvider theme={theme}>
-      <Routes />
+      <View style={{flex: 1}}>
+        <Routes />
+      </View>
     </ThemeProvider>
   );
 }

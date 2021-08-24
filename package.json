@@ -5,7 +5,7 @@
     "ios": "react-native run-ios",
     "web": "expo start --web",
     "start": "react-native start",
-    "api": "json-server ./src/services/server.json --host 10.1.0.5 --port 3333 --delay 700",
+    "api": "json-server ./src/services/server.json --host 10.1.0.7 --port 3333 --delay 700",
     "test": "jest"
   },
   "dependencies": {
@@ -17,6 +17,7 @@
     "expo-app-loading": "^1.1.2",
     "expo-splash-screen": "~0.10.2",
     "expo-updates": "~0.5.4",
+    "lottie-react-native": "3.5.0",
     "react": "16.13.1",
     "react-dom": "16.13.1",
     "react-native": "~0.63.4",

@@ -24,7 +24,7 @@ export const ImageIndex = styled.View<ImageIndexProps>`
     };
 
     margin-left: 8px;
-    border-radius: 3px
+    border-radius: 3px;
 `
 
 export const CarImageWrapper = styled.View`
