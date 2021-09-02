@@ -1,18 +1,10 @@
-import React, { createContext, useState, useContext, ReactNode } from 'react'
+import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react'
+
 import api from '../services/api'
+import { database } from '../databases'
+import { User as ModelUser } from '../databases/model/User'
 
-interface User {
-    id: string
-    email: string
-    name: string
-    driver_license: string
-    avatar: string
-}
-
-interface AuthState{
-    token: string
-    user: User
-}
+import {UserDTO} from '../dtos/UserDto'
 
 interface SignInCredentials{
     email: string
@@ -20,8 +12,10 @@ interface SignInCredentials{
 }
 
 interface AuthContextData{
-    user: User
+    user: UserDTO
     signIn: (credentials: SignInCredentials) => Promise<void>
+    signOut: () => Promise<void>
+    updateUser(user: UserDTO): void
 }
 
 interface AuthProviderProps{
@@ -31,23 +25,61 @@ interface AuthProviderProps{
 const AuthContext = createContext<AuthContextData>({} as AuthContextData)
 
 function AuthProvider({children}: AuthProviderProps){
-    const [data, setData] = useState<AuthState>({} as AuthState)
+    const [data, setData] = useState<UserDTO>({} as UserDTO)
 
     async function signIn({email, password}: SignInCredentials){
-        const response = await api.post('/sessions', {
-            email,
-            password
-        })
+        try{
+            const response = await api.post('/sessions', {
+                email,
+                password
+            })
+    
+            const { token, user } = response.data
+            api.defaults.headers.authorization = `Bearer ${token}`
 
-        const { token, user } = response.data
-        api.defaults.headers.authorization = `Bearer ${token}`
-        setData({token, user})
+            setData({...user, token})
+        }catch(error){
+            console.log(error)
+        }
     }
+
+    async function signOut(){
+        try{
+            setData({} as UserDTO)
+        }catch(error){
+            throw new Error(error)
+        }
+    }
+
+    async function updateUser(user: UserDTO){
+        try{
+            setData(user)
+        }catch(error){
+            throw new Error(error)
+        }
+    }
+
+    useEffect(() => {
+        async function loadUserData(){
+            const userCollection = database.get<ModelUser>('users')
+            const response = await userCollection.query().fetch()
+
+            if(response.length > 0){
+                const userData = response[0]._raw as unknown as UserDTO
+                api.defaults.headers.authorization = `Bearer ${userData.token}`
+                setData(userData)
+            }
+        }
+
+        loadUserData()
+    },[])
 
     return (
         <AuthContext.Provider value={{
-            user: data.user,
-            signIn
+            user: data,
+            signIn,
+            signOut,
+            updateUser
         }}>
             {children}
         </AuthContext.Provider>

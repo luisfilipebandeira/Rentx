@@ -13,6 +13,7 @@ export type RootStackParamList = {
   MyCars: undefined;
 };
 
+import {Profile} from '../screens/Profile'
 import {MyCars} from '../screens/MyCars'
 
 import {AppStackRoutes} from './app.stack.routes'
@@ -48,15 +49,6 @@ export function AppTabRoutes() {
           }}
         />
         <Tab.Screen 
-          name="Profile" 
-          component={AppStackRoutes} 
-          options={{
-            tabBarIcon: (({color}) => (
-              <PeopleSvg width={24} height={24} fill={color} />
-            ))
-          }}  
-        />
-        <Tab.Screen 
           name="MyCars" 
           component={MyCars}
           options={{
@@ -64,6 +56,15 @@ export function AppTabRoutes() {
               <CarSvg width={24} height={24} fill={color} />
             ))
           }}
+        />
+        <Tab.Screen 
+          name="Profile" 
+          component={Profile} 
+          options={{
+            tabBarIcon: (({color}) => (
+              <PeopleSvg width={24} height={24} fill={color} />
+            ))
+          }}  
         />
       </Tab.Navigator>
   );

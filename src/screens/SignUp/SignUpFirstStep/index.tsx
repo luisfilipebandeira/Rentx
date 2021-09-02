@@ -6,7 +6,7 @@ import { Bullet } from '../../../components/Bullet'
 import { Input } from '../../../components/Input'
 import { Button } from '../../../components/Button'
 
-import { RootStackParamList } from '../../../routes/stack.routes'
+import { RootStackParamList } from '../../../routes/auth.routes'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 
 import * as Yup from 'yup'

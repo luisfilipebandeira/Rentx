@@ -19,8 +19,9 @@ import { PasswordInput } from '../../components/PasswordInput'
 
 import { useNavigation } from '@react-navigation/native'
 
-import { RootStackParamList } from '../../routes/stack.routes'
+import { RootStackParamList } from '../../routes/auth.routes'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+
 
 import {
    Container,
@@ -60,6 +61,7 @@ export function SignIn(){
             }
         }
     }
+
 
     return (
     <KeyboardAvoidingView behavior="position" enabled>
