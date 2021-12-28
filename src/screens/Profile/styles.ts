@@ -1,5 +1,4 @@
 import styled, {css} from 'styled-components/native'
-import { TouchableOpacity } from 'react-native'
 import { getStatusBarHeight } from 'react-native-iphone-x-helper'
 import { RFValue } from 'react-native-responsive-fontsize'
 
@@ -8,6 +7,7 @@ interface OptionProps{
 }
 
 export const Container = styled.View`
+    flex: 1;
     background-color: ${({theme}) => theme.colors.background_primary};
 `
 
@@ -53,7 +53,7 @@ export const Photo = styled.Image`
     border-radius: 90px;
 `
 
-export const PhotoButton = styled(TouchableOpacity)`
+export const PhotoButton = styled.TouchableOpacity`
     width: 40px;
     height: 40px;
     background-color: ${({theme}) => theme.colors.main};
@@ -61,11 +61,13 @@ export const PhotoButton = styled(TouchableOpacity)`
     justify-content: center;
     align-items: center;
 
+    position: absolute;
     bottom: 10px;
     right: 10px;
 `
 
 export const Content = styled.View`
+    flex: 1;
     padding: 0 24px;
     margin-top: 122px;
 `
@@ -92,5 +94,3 @@ export const OptionTitle = styled.Text<OptionProps>`
     font-size: ${RFValue(20)}px;
     color: ${({theme, active}) => active ? theme.colors.header : theme.colors.text_detail};
 `
-
-export const Sections = styled.View``

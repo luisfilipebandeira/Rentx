@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { StatusBar, TouchableOpacity, StyleSheet, Alert } from 'react-native'
+import { StatusBar, TouchableOpacity, StyleSheet } from 'react-native'
 import {RFValue} from 'react-native-responsive-fontsize'
 
 import Logo from '../../assets/logo.svg'
 import api from '../../services/api'
-
-import NetInfo, { useNetInfo } from '@react-native-community/netinfo';
 
 import { Car } from '../../components/Car'
 import { LoadAnimation } from '../../components/LoadAnimation'
@@ -30,7 +28,6 @@ export function Home(){
    const [cars, setCars] = useState<CarDTO[]>([])
    const [loading, setLoading] = useState(true)
 
-   const netInfo = useNetInfo()
    const navigation = useNavigation<homeScreenProp>()
 
    useEffect(() => {
@@ -55,7 +52,7 @@ export function Home(){
       return () => {
          isMounted = false
       }
-   },[])
+   }, [])
 
    if(loading){
       return(
